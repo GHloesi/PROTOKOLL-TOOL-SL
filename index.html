@@ -1,0 +1,4849 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+<title>Protokoll-Tool V3.3</title>
+
+<style>
+*{box-sizing:border-box}
+
+:root{
+    --bg:#f1f5f9;
+    --card:#fff;
+    --dark:#172033;
+    --text:#1f2937;
+    --muted:#64748b;
+    --border:#dbe2ea;
+    --primary:#2563eb;
+    --green:#15803d;
+    --red:#dc2626;
+    --orange:#d97706;
+    --purple:#7c3aed;
+    --cyan:#0369a1;
+}
+
+body{
+    margin:0;
+    font-family:Arial,Helvetica,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+header{
+    background:var(--dark);
+    color:white;
+    padding:17px 28px;
+}
+
+.header-inner{
+    max-width:1500px;
+    margin:auto;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+}
+
+header h1{
+    margin:0;
+    font-size:23px;
+}
+
+header p{
+    margin:4px 0 0;
+    color:#cbd5e1;
+    font-size:12px;
+}
+
+.container{
+    max-width:1500px;
+    margin:20px auto;
+    padding:0 18px 105px;
+}
+
+.card{
+    background:white;
+    border-radius:11px;
+    padding:18px;
+    margin-bottom:18px;
+    box-shadow:0 2px 9px rgba(0,0,0,.06);
+}
+
+h2{margin:0 0 15px;font-size:18px}
+h3{margin:0 0 12px;font-size:16px}
+
+label{
+    display:block;
+    font-size:12px;
+    font-weight:bold;
+    color:#475569;
+    margin-bottom:5px;
+}
+
+input,textarea,select{
+    width:100%;
+    border:1px solid #cbd5e1;
+    border-radius:7px;
+    padding:9px 10px;
+    background:white;
+    color:var(--text);
+    font-size:14px;
+}
+
+textarea{
+    resize:vertical;
+    min-height:95px;
+    line-height:1.45;
+}
+
+button{
+    border:0;
+    border-radius:7px;
+    padding:9px 13px;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+button:hover{opacity:.88}
+button:disabled{opacity:.45;cursor:not-allowed}
+
+.primary{background:var(--primary);color:white}
+.secondary{background:#e2e8f0;color:#1f2937}
+.success{background:var(--green);color:white}
+.danger{background:var(--red);color:white}
+.warning{background:var(--orange);color:white}
+.ai{background:var(--purple);color:white}
+.audio-button{background:var(--cyan);color:white}
+
+.small-button{
+    padding:6px 9px;
+    font-size:12px;
+}
+
+.row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    align-items:center;
+}
+
+.grid2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:13px;
+}
+
+
+.protocol-head{
+    display:grid;
+    grid-template-columns:minmax(0,2fr) minmax(140px,0.6fr) minmax(0,1.2fr);
+    gap:16px;
+    align-items:end;
+}
+
+.protocol-head > div{
+    min-width:0;
+}
+
+.protocol-head input{
+    width:100%;
+    min-width:0;
+}
+
+.card-title-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    margin-bottom:14px;
+}
+
+.card-title-row h2{margin:0}
+
+.hidden{display:none!important}
+
+.info{
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.45;
+}
+
+/* API */
+
+.api-settings{
+    margin-top:16px;
+    padding:16px;
+    border:1px solid #cbd5e1;
+    border-radius:9px;
+    background:#f8fafc;
+}
+
+.api-grid{
+    display:grid;
+    grid-template-columns:1.4fr 1fr 1fr;
+    gap:14px;
+}
+
+.key-wrap{
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:7px;
+}
+
+.checkbox-line{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    margin-top:9px;
+    font-size:12px;
+    color:var(--muted);
+}
+
+.checkbox-line input{width:auto}
+
+.status-message{
+    font-size:12px;
+    margin-top:8px;
+}
+
+.status-good{
+    color:var(--green);
+    font-weight:bold;
+}
+
+.status-bad{
+    color:var(--red);
+    font-weight:bold;
+}
+
+/* Teilnehmer */
+
+.team-input{
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:8px;
+}
+
+.team-list{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    margin-top:11px;
+}
+
+.member{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    background:#eef2ff;
+    padding:6px 9px;
+    border-radius:20px;
+    font-size:13px;
+}
+
+.member button{
+    padding:1px 6px;
+    background:var(--red);
+    color:white;
+}
+
+/* Themen */
+
+.topic{
+    border:1px solid var(--border);
+    border-radius:10px;
+    margin-bottom:18px;
+    overflow:hidden;
+}
+
+.topic-header{
+    display:grid;
+    grid-template-columns:58px 1fr auto;
+    gap:10px;
+    align-items:center;
+    background:#f8fafc;
+    padding:13px;
+}
+
+.topic-number{
+    font-size:21px;
+    font-weight:bold;
+    color:var(--primary);
+    text-align:center;
+}
+
+.entry{
+    padding:17px;
+    border-top:1px solid #edf0f4;
+}
+
+.entry-meta{
+    display:grid;
+    grid-template-columns:70px 200px 150px 145px 150px;
+    gap:10px;
+    align-items:end;
+    margin-bottom:12px;
+}
+
+.entry-number{
+    font-size:17px;
+    font-weight:bold;
+    padding-bottom:9px;
+}
+
+/* Zuständigkeit */
+
+.responsible-summary{
+    min-height:39px;
+    border:1px solid #cbd5e1;
+    border-radius:7px;
+    background:white;
+    padding:8px 10px;
+    font-size:13px;
+    cursor:pointer;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+}
+
+.responsible-text{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.responsible-box{
+    position:absolute;
+    z-index:100;
+    margin-top:5px;
+    min-width:300px;
+    max-width:420px;
+    padding:12px;
+    border:1px solid #cbd5e1;
+    border-radius:8px;
+    background:white;
+    box-shadow:0 8px 24px rgba(0,0,0,.15);
+}
+
+.responsible-holder{
+    position:relative;
+}
+
+.responsible-person{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:5px 2px;
+    font-size:13px;
+}
+
+.responsible-person input{
+    width:auto;
+}
+
+.responsible-free{
+    margin-top:10px;
+}
+
+/* Audio */
+
+.audio-area{
+    margin-top:13px;
+    padding:14px;
+    border:1px solid #bae6fd;
+    background:#f0f9ff;
+    border-radius:9px;
+}
+
+.audio-title{
+    font-size:14px;
+    font-weight:bold;
+    margin-bottom:9px;
+}
+
+.audio-area audio{
+    width:100%;
+    margin-top:10px;
+}
+
+.recording,.dictating{
+    background:var(--red)!important;
+    animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+    50%{opacity:.55}
+}
+
+.badges{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+    margin-top:9px;
+}
+
+.badge{
+    display:inline-flex;
+    align-items:center;
+    border-radius:20px;
+    padding:4px 8px;
+    font-size:11px;
+    font-weight:bold;
+}
+
+.badge-audio{
+    background:#dbeafe;
+    color:#1d4ed8;
+}
+
+.badge-pencil{
+    background:#f3e8ff;
+    color:#7e22ce;
+}
+
+.transcript-area{
+    margin-top:12px;
+    padding:14px;
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:9px;
+}
+
+/* KI */
+
+.ai-area{
+    margin-top:12px;
+    padding:14px;
+    background:#faf5ff;
+    border:1px solid #ddd6fe;
+    border-radius:9px;
+}
+
+.prompt{
+    min-height:250px;
+    font-family:Consolas,monospace;
+    font-size:12px;
+}
+
+/* Tabelle */
+
+.protocol-table-wrap{
+    overflow-x:auto;
+}
+
+.protocol-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+}
+
+.protocol-table th{
+    background:#e2e8f0;
+    color:#334155;
+    text-align:left;
+    padding:9px;
+    border:1px solid #cbd5e1;
+}
+
+.protocol-table td{
+    border:1px solid #cbd5e1;
+    padding:9px;
+    vertical-align:top;
+    line-height:1.4;
+}
+
+.protocol-table .number-column{
+    width:65px;
+    font-weight:bold;
+}
+
+.protocol-table .type-column{width:110px}
+.protocol-table .member-column{width:190px}
+.protocol-table .status-column{width:110px}
+.protocol-table .date-column{width:110px}
+
+.topic-row td{
+    background:#f1f5f9;
+    font-weight:bold;
+    font-size:14px;
+}
+
+
+
+
+.protocol-summary{
+    margin-bottom:15px;
+    display:grid;
+    grid-template-columns:minmax(0,2fr) minmax(120px,0.6fr) minmax(0,1.2fr);
+    gap:12px;
+    font-size:13px;
+}
+
+.protocol-summary > div{
+    min-width:0;
+    overflow-wrap:anywhere;
+}
+
+/* Modal */
+
+.modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(15,23,42,.72);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:10000;
+}
+
+.modal{
+    width:min(950px,100%);
+    max-height:92vh;
+    background:white;
+    border-radius:12px;
+    box-shadow:0 20px 50px rgba(0,0,0,.3);
+    display:flex;
+    flex-direction:column;
+}
+
+.modal-header{
+    padding:16px 20px;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+}
+
+.modal-header h2{margin:0}
+
+.modal-content{
+    padding:20px;
+    overflow:auto;
+    line-height:1.55;
+    font-size:14px;
+}
+
+.modal-content h3{
+    margin-top:22px;
+    color:#1e3a8a;
+}
+
+.modal-content h3:first-child{margin-top:0}
+
+.help-note{
+    padding:10px 12px;
+    background:#eff6ff;
+    border-left:4px solid var(--primary);
+    margin:10px 0;
+}
+
+.help-warning{
+    padding:10px 12px;
+    background:#fff7ed;
+    border-left:4px solid var(--orange);
+    margin:10px 0;
+}
+
+/* Stift */
+
+#drawingModal .modal{
+    width:min(1100px,98vw);
+}
+
+.drawing-toolbar{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:8px;
+    margin-bottom:10px;
+}
+
+.drawing-toolbar input[type=range]{
+    width:140px;
+}
+
+.canvas-wrap{
+    width:100%;
+    height:min(65vh,650px);
+    border:2px solid #cbd5e1;
+    border-radius:10px;
+    overflow:hidden;
+    background:white;
+    touch-action:none;
+}
+
+#drawingCanvas{
+    display:block;
+    width:100%;
+    height:100%;
+    background:white;
+    touch-action:none;
+    cursor:crosshair;
+}
+
+.pencil-status{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:8px;
+}
+
+/* Hersteller */
+
+.brand-corner{
+    position:fixed;
+    right:12px;
+    bottom:58px;
+    z-index:90;
+    font-size:10px;
+    color:#64748b;
+    background:rgba(255,255,255,.9);
+    border:1px solid #e2e8f0;
+    border-radius:6px;
+    padding:5px 8px;
+}
+
+/* Footer */
+
+.footer{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background:rgba(255,255,255,.96);
+    border-top:1px solid var(--border);
+    padding:9px;
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    z-index:100;
+}
+
+@media(max-width:1100px){
+    .entry-meta{
+        grid-template-columns:70px 1fr 1fr;
+    }
+
+    .protocol-head,.api-grid{
+        grid-template-columns:1fr 1fr;
+    }
+}
+
+@media(max-width:700px){
+    .protocol-head,
+    .api-grid,
+    .grid2,
+    .entry-meta,
+    .topic-header,
+    .protocol-summary{
+        grid-template-columns:1fr;
+    }
+
+    .topic-number{text-align:left}
+    .brand-corner{display:none}
+
+    .responsible-box{
+        position:relative;
+        min-width:0;
+        width:100%;
+    }
+}
+
+@media print{
+    body{background:white}
+
+    header,
+    .footer,
+    .brand-corner,
+    .editor-section,
+    .team-card,
+    .api-settings,
+    .export-card,
+    .noprint{
+        display:none!important;
+    }
+
+    .container{
+        max-width:none;
+        margin:0;
+        padding:0;
+    }
+
+    .card{
+        box-shadow:none;
+        padding:0;
+    }
+
+    #tableCard{display:block!important}
+
+    .protocol-table{font-size:10pt}
+
+    @page{
+        size:A4 landscape;
+        margin:12mm;
+    }
+	@media print{
+
+    body{
+        background:white;
+    }
+
+    .protocol-table{
+        width:100%;
+        table-layout:fixed;
+        font-size:9pt;
+    }
+
+    .protocol-table .number-column{
+        width:5%;
+    }
+
+    .protocol-table th:nth-child(2){
+        width:48%;
+    }
+
+    .protocol-table .type-column{
+        width:10%;
+    }
+
+    .protocol-table .member-column{
+        width:17%;
+    }
+
+    .protocol-table .status-column{
+        width:10%;
+    }
+
+    .protocol-table .date-column{
+        width:5%;
+    }
+
+    .protocol-table td{
+        overflow-wrap:anywhere;
+        word-wrap:break-word;
+    }
+
+    @page{
+        size:A4 landscape;
+        margin:12mm;
+    }
+	.protocol-head{
+    display:grid !important;
+    grid-template-columns:minmax(0, 5fr) minmax(0, 1.8fr) minmax(0, 3.2fr) !important;
+    gap:8px !important;
+    width:100% !important;
+    align-items:end !important;
+}
+
+.protocol-head > div{
+    min-width:0 !important;
+    width:100% !important;
+}
+
+.protocol-head input{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:100% !important;
+    height:32px !important;
+    padding:4px 6px !important;
+    margin:0 !important;
+    box-sizing:border-box !important;
+}
+
+.protocol-head label{
+    display:block;
+    margin:0 0 3px 0 !important;
+    font-size:9pt !important;
+    line-height:12px !important;
+}
+}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="header-inner">
+    <div>
+        <h1>Protokoll-Tool SL</h1>
+        <p>Audio · Diktat · Stiftnotizen · Transkription · KI · Protokoll -       			Stefan L. </p>
+    </div>
+
+    <button class="secondary" onclick="openHelp()">
+        ⓘ Anleitung
+    </button>
+</div>
+</header>
+
+<div class="container">
+
+<!-- PROTOKOLLDATEN -->
+
+<div class="card">
+<div class="card-title-row">
+    <h2>Protokolldaten</h2>
+
+    <button class="secondary small-button noprint"
+            onclick="toggleApiSettings()">
+        ⚙ KI / API
+    </button>
+</div>
+
+<div class="protocol-head">
+    <div>
+        <label>Titel / Besprechung</label>
+        <input id="protocolTitle" placeholder="z. B. Projektbesprechung">
+    </div>
+
+    <div>
+        <label>Datum</label>
+        <input id="protocolDate" type="date">
+    </div>
+
+    <div>
+        <label>Ort / Besprechungsform</label>
+        <input id="protocolLocation" placeholder="Büro / Teams / Baustelle">
+    </div>
+</div>
+
+<div id="apiSettings" class="api-settings hidden noprint">
+
+<h3>KI / API-Einstellungen</h3>
+
+<div class="api-grid">
+
+<div>
+<label>OpenAI API-Key</label>
+
+<div class="key-wrap">
+<input id="apiKey"
+       type="password"
+       autocomplete="off"
+       placeholder="API-Key">
+
+<button id="showKeyButton"
+        class="secondary"
+        onclick="toggleApiKey()">
+Anzeigen
+</button>
+</div>
+
+<label class="checkbox-line">
+<input id="rememberApiKey" type="checkbox">
+API-Key auf diesem Gerät speichern
+</label>
+</div>
+
+<div>
+<label>Transkriptionsmodell</label>
+<input id="transcriptionModel"
+       value="gpt-4o-mini-transcribe">
+</div>
+
+<div>
+<label>Textmodell</label>
+<input id="textModel"
+       placeholder="API-Modell eintragen">
+</div>
+
+</div>
+
+<div class="row" style="margin-top:12px">
+<button class="primary" onclick="saveApiSettings()">
+Speichern
+</button>
+
+<button class="secondary" onclick="testApiConnection()">
+Verbindung testen
+</button>
+
+<button class="danger" onclick="deleteApiKey()">
+Gespeicherten Key löschen
+</button>
+</div>
+
+<div id="apiStatus" class="status-message">
+API noch nicht geprüft.
+</div>
+
+<p class="info">
+Der API-Key wird nicht in Protokoll-, CSV- oder JSON-Dateien exportiert.
+</p>
+
+</div>
+</div>
+
+<!-- TEILNEHMER -->
+
+<div class="card team-card">
+<h2>Teilnehmer / Team</h2>
+
+<div class="team-input">
+<input id="memberInput"
+       placeholder="Max Mustermann, Müller, Anna Schmidt, Peter"
+       onkeydown="if(event.key==='Enter') addMembers()">
+
+<button class="primary" onclick="addMembers()">
++ Hinzufügen
+</button>
+</div>
+
+<p class="info">
+Mehrere Namen mit Komma trennen. Einzelname sowie Vor- und Nachname sind möglich.
+</p>
+
+<div id="memberList" class="team-list"></div>
+</div>
+
+<!-- EDITOR -->
+
+<div class="card editor-section">
+
+<div class="card-title-row">
+<h2>Themen & Protokoll</h2>
+
+<button class="primary" onclick="addTopic()">
++ Thema
+</button>
+</div>
+
+<div id="topicsContainer"></div>
+
+</div>
+
+<!-- GESAMTPROTOKOLL -->
+
+<div class="card" id="tableCard">
+
+<div class="card-title-row">
+<h2>Tabellarisches Gesamtprotokoll</h2>
+
+<button class="secondary noprint"
+        onclick="renderProtocolTable()">
+Tabelle aktualisieren
+</button>
+</div>
+
+<div id="protocolSummary" class="protocol-summary"></div>
+<div id="protocolTableContainer" class="protocol-table-wrap"></div>
+
+</div>
+
+<!-- EXPORT -->
+
+<div class="card export-card">
+<h2>Speichern & Export</h2>
+
+<div class="row">
+
+<button class="primary" onclick="saveProtocolLocal()">
+Lokal speichern
+</button>
+
+<button class="secondary" onclick="loadProtocolLocal()">
+Lokal laden
+</button>
+
+<button class="success" onclick="exportCSV()">
+CSV
+</button>
+
+<button class="secondary" onclick="exportJSON()">
+JSON-Sicherung
+</button>
+
+<button class="secondary"
+        onclick="document.getElementById('importFile').click()">
+JSON laden
+</button>
+
+<button class="secondary" onclick="printProtocol()">
+PDF / Drucken
+</button>
+
+<input id="importFile"
+       type="file"
+       accept=".json"
+       class="hidden"
+       onchange="importJSON(event)">
+
+</div>
+
+<p class="info">
+Audioaufnahmen und Stiftnotizen werden separat im Browser gespeichert
+und nicht in CSV oder JSON eingebettet.
+</p>
+
+</div>
+
+</div>
+
+<!-- BRAND -->
+
+<div class="brand-corner">
+Erstellt von <strong>Stefan Loeseke</strong> ·
+<strong>flyloetrump</strong> · V3.3
+</div>
+
+<!-- FOOTER -->
+
+<div class="footer noprint">
+
+<button class="primary" onclick="addTopic()">
++ Thema
+</button>
+
+<button class="secondary" onclick="saveProtocolLocal()">
+Speichern
+</button>
+
+<button class="secondary"
+onclick="renderProtocolTable();document.getElementById('tableCard').scrollIntoView({behavior:'smooth'})">
+Gesamtprotokoll
+</button>
+
+<button class="success" onclick="exportCSV()">
+CSV
+</button>
+
+<button class="secondary" onclick="printProtocol()">
+PDF
+</button>
+
+<button class="secondary" onclick="openHelp()">
+ⓘ Hilfe
+</button>
+
+</div>
+
+<!-- HILFE -->
+
+<div id="helpModal"
+     class="modal-overlay hidden"
+     onclick="if(event.target===this) closeHelp()">
+
+<div class="modal">
+
+<div class="modal-header">
+<h2>Anleitung – Protokoll-Tool V3.3</h2>
+
+<button class="secondary" onclick="closeHelp()">
+✕ Schließen
+</button>
+</div>
+
+<div class="modal-content">
+
+<h3>1. Protokoll anlegen</h3>
+<p>
+Titel, Datum und Ort der Besprechung werden oben eingetragen.
+Die Angaben erscheinen später im Gesamtprotokoll.
+</p>
+
+<h3>2. Teilnehmer</h3>
+<p>
+Teilnehmer können einzeln oder gesammelt eingegeben werden.
+Mehrere Personen werden durch Komma getrennt.
+</p>
+
+<div class="help-note">
+Beispiel:<br>
+Max Mustermann, Müller, Anna Schmidt, Peter
+</div>
+
+<h3>3. Themen und Unterpunkte</h3>
+<p>
+Mit „+ Thema“ wird ein Hauptthema angelegt.
+Innerhalb des Themas können beliebig viele Unterpunkte erzeugt werden.
+Die Nummerierung erfolgt automatisch.
+</p>
+
+<h3>4. Zuständigkeit</h3>
+<p>
+Pro Unterpunkt können mehrere Teilnehmer gleichzeitig ausgewählt werden.
+Zusätzlich können weitere Personen oder Firmen frei eingetragen werden.
+</p>
+
+<h3>5. Attribute</h3>
+<p>
+Zur Verfügung stehen Info, Aufgabe, Entscheidung, Frage, Hinweis und Termin.
+Zusätzlich können Status und Fälligkeitsdatum gepflegt werden.
+</p>
+
+<h3>6. Audioaufnahme</h3>
+<p>
+Mit „Aufnahme starten“ wird eine neue Mikrofonaufnahme begonnen.
+Nach dem Stoppen kann die Aufnahme zunächst angehört werden.
+</p>
+
+<div class="help-note">
+Neu in V3.3: Die Aufnahme wird nicht automatisch dauerhaft gespeichert.
+Mit „Aufnahme lokal speichern“ entscheidest du ausdrücklich, ob sie
+dauerhaft im Browser abgelegt werden soll.
+</div>
+
+<p>
+Nach dem lokalen Speichern erscheint der Hinweis „Audio gespeichert“.
+Beim späteren Laden des Protokolls wird die Aufnahme wieder dem
+entsprechenden Unterpunkt zugeordnet.
+</p>
+
+<p>
+„Gespeichertes Audio löschen“ entfernt die dauerhaft gespeicherte
+Aufnahme dieses Unterpunktes.
+</p>
+
+<h3>7. Audio-Datei exportieren</h3>
+<p>
+Mit „Audio-Datei exportieren“ kann die aktuelle Aufnahme zusätzlich
+als separate Audiodatei gespeichert werden.
+</p>
+
+<h3>8. Audio → Text</h3>
+<p>
+Eine vorhandene Aufnahme kann über die konfigurierte API transkribiert
+werden. Das Ergebnis erscheint zunächst als Rohtranskription.
+</p>
+
+<h3>9. Live-Diktat</h3>
+<p>
+Soweit der Browser dies unterstützt, kann Sprache unmittelbar während
+des Sprechens in Text umgewandelt werden.
+</p>
+
+<h3>10. Stiftnotiz / Apple Pencil</h3>
+<p>
+Jeder Unterpunkt besitzt den Button „✎ Stiftnotiz“.
+Die Zeichenfläche ist im normalen Protokoll vollständig geschlossen
+und wird nur beim Antippen dieses Buttons geöffnet.
+</p>
+
+<p>
+Die Zeichenfläche kann mit Apple Pencil, Touch oder Maus verwendet werden.
+Bei unterstützten Geräten werden Pointer-Eingaben einschließlich
+Stifteingaben verarbeitet.
+</p>
+
+<div class="help-note">
+Die Stiftnotiz eignet sich beispielsweise für Skizzen,
+handschriftliche Ergänzungen, Pfeile, Maße oder kurze Notizen.
+</div>
+
+<h3>11. Stiftnotiz speichern</h3>
+<p>
+Mit „Notiz speichern“ wird die Zeichnung lokal gespeichert und dem
+aktuellen Unterpunkt zugeordnet. Danach erscheint
+„Stiftnotiz vorhanden“.
+</p>
+
+<p>
+Die Notiz kann später erneut geöffnet und weiterbearbeitet werden.
+</p>
+
+<h3>12. Rückgängig</h3>
+<p>
+„↶ Rückgängig“ entfernt den zuletzt ausgeführten Zeichenstrich.
+Mehrfaches Betätigen geht mehrere Schritte zurück.
+</p>
+
+<h3>13. Zeichenfläche löschen</h3>
+<p>
+„Zeichenfläche leeren“ entfernt die Zeichnung zunächst nur aus der
+aktuellen Zeichenfläche. Erst „Notiz speichern“ übernimmt diesen Zustand.
+</p>
+
+<h3>14. Gespeicherte Stiftnotiz löschen</h3>
+<p>
+Mit „Gespeicherte Notiz löschen“ wird die gespeicherte Zeichnung des
+Unterpunktes aus dem lokalen Speicher entfernt.
+</p>
+
+<h3>15. Protokolltext</h3>
+<p>
+Der endgültige Text wird im Feld „Protokolltext“ geführt.
+Die Rohtranskription bleibt davon getrennt.
+</p>
+
+<h3>16. KI</h3>
+<p>
+Über „KI präzisieren“ und „KI zusammenfassen“ kann ein vorhandener
+Text bearbeitet werden. Ein KI-Ergebnis ersetzt den Protokolltext
+erst nach ausdrücklichem Übernehmen.
+</p>
+
+<h3>17. Manuelle KI-Hilfe</h3>
+<p>
+Ohne direkte Text-API kann ein fertiger Prompt erzeugt werden.
+Dieser kann in ein anderes KI-System kopiert werden.
+Die Antwort wird anschließend zurück in das Protokoll übernommen.
+</p>
+
+<h3>18. Gesamtprotokoll</h3>
+<p>
+Das tabellarische Gesamtprotokoll enthält Nummer, Inhalt,
+Attribut, alle Zuständigen, Status und Termin.
+</p>
+
+<h3>19. Lokal speichern</h3>
+<p>
+Die normalen Protokolldaten werden im lokalen Browserspeicher abgelegt.
+Audio und Stiftnotizen werden separat in IndexedDB gespeichert.
+</p>
+
+<h3>20. JSON</h3>
+<p>
+Die JSON-Sicherung enthält die strukturierten Protokolldaten,
+jedoch keine großen Audio- oder Bilddaten.
+</p>
+
+<h3>21. CSV</h3>
+<p>
+CSV exportiert die tabellarischen Protokollinformationen.
+Mehrere Zuständige erscheinen gemeinsam in der Spalte „Zuständig“.
+</p>
+
+<h3>22. PDF</h3>
+<p>
+„PDF / Drucken“ öffnet die Druckfunktion des Browsers.
+Dort kann das Gesamtprotokoll als PDF gespeichert werden.
+</p>
+
+<h3>23. Wichtiger Hinweis zu lokalen Anhängen</h3>
+
+<div class="help-warning">
+Audioaufnahmen und Stiftnotizen liegen lokal im Speicher des verwendeten
+Browsers und Gerätes. Das Löschen von Browserdaten kann deshalb auch
+diese gespeicherten Anhänge entfernen. Für wichtige Audioaufnahmen sollte
+zusätzlich die Funktion „Audio-Datei exportieren“ verwendet werden.
+</div>
+
+<h3>24. Programm</h3>
+<p>
+Erstellt von <strong>Stefan Loeseke</strong><br>
+Softwarefirma <strong>flyloetrump</strong><br>
+Version 3.3
+</p>
+
+</div>
+</div>
+</div>
+
+<!-- STIFT MODAL -->
+
+<div id="drawingModal" class="modal-overlay hidden">
+
+<div class="modal">
+
+<div class="modal-header">
+<div>
+<h2>✎ Stiftnotiz</h2>
+<div id="drawingTitle" class="info"></div>
+</div>
+
+<button class="secondary" onclick="closeDrawingModal()">
+✕ Schließen
+</button>
+</div>
+
+<div class="modal-content">
+
+<div class="drawing-toolbar">
+
+<button class="secondary" onclick="undoDrawing()">
+↶ Rückgängig
+</button>
+
+<button class="secondary" onclick="clearDrawing()">
+Zeichenfläche leeren
+</button>
+
+<label style="margin:0">
+Stiftbreite
+</label>
+
+<input id="penWidth"
+       type="range"
+       min="1"
+       max="12"
+       value="3">
+
+<button class="success" onclick="saveDrawing()">
+Notiz speichern
+</button>
+
+<button id="deleteDrawingButton"
+        class="danger"
+        onclick="deleteCurrentDrawing()">
+Gespeicherte Notiz löschen
+</button>
+
+</div>
+
+<div class="canvas-wrap" id="canvasWrap">
+<canvas id="drawingCanvas"></canvas>
+</div>
+
+<div class="pencil-status">
+Apple Pencil, Touch und Maus können direkt auf dieser Fläche verwendet werden.
+</div>
+
+</div>
+</div>
+</div>
+
+<script>
+
+/* =========================================================
+   GRUNDDATEN
+========================================================= */
+
+let teamMembers = [];
+let topics = [];
+
+let nextTopicId = 1;
+let nextEntryId = 1;
+
+let mediaRecorder = null;
+let audioChunks = [];
+let activeRecording = null;
+
+let activeRecognition = null;
+
+const STORAGE_PROTOCOL = "protocol_tool_v33";
+const STORAGE_API_KEY = "protocol_tool_api_key";
+const STORAGE_API_SETTINGS = "protocol_tool_api_settings";
+
+/*
+    Jeder Unterpunkt erhält zusätzlich eine stabile UUID.
+    Dadurch bleiben Audio und Stiftnotiz auch dann zugeordnet,
+    wenn sich die sichtbare Nummerierung ändert.
+*/
+
+function createUUID(){
+    if(window.crypto && crypto.randomUUID){
+        return crypto.randomUUID();
+    }
+
+    return "entry-" +
+        Date.now() + "-" +
+        Math.random().toString(36).slice(2);
+}
+
+function createEntry(){
+    return {
+        id:nextEntryId++,
+        uid:createUUID(),
+
+        members:[],
+        additionalMembers:"",
+
+        type:"Info",
+        status:"Offen",
+        dueDate:"",
+
+        text:"",
+        transcript:"",
+        previousText:"",
+
+        audioBlob:null,
+        audioURL:null,
+        audioType:"",
+
+        audioStored:false,
+        drawingStored:false
+    };
+}
+
+/* =========================================================
+   INDEXED DB
+========================================================= */
+
+const DB_NAME = "LoesiProtocolAttachments";
+const DB_VERSION = 1;
+
+const AUDIO_STORE = "audio";
+const DRAWING_STORE = "drawings";
+
+let dbPromise = null;
+
+function openDatabase(){
+
+    if(dbPromise){
+        return dbPromise;
+    }
+
+    dbPromise = new Promise((resolve,reject)=>{
+
+        const request =
+            indexedDB.open(DB_NAME,DB_VERSION);
+
+        request.onupgradeneeded = function(event){
+
+            const db = event.target.result;
+
+            if(!db.objectStoreNames.contains(AUDIO_STORE)){
+                db.createObjectStore(AUDIO_STORE,{
+                    keyPath:"uid"
+                });
+            }
+
+            if(!db.objectStoreNames.contains(DRAWING_STORE)){
+                db.createObjectStore(DRAWING_STORE,{
+                    keyPath:"uid"
+                });
+            }
+        };
+
+        request.onsuccess = function(){
+            resolve(request.result);
+        };
+
+        request.onerror = function(){
+            reject(request.error);
+        };
+    });
+
+    return dbPromise;
+}
+
+async function idbPut(storeName,value){
+
+    const db = await openDatabase();
+
+    return new Promise((resolve,reject)=>{
+
+        const transaction =
+            db.transaction(storeName,"readwrite");
+
+        const store =
+            transaction.objectStore(storeName);
+
+        store.put(value);
+
+        transaction.oncomplete = ()=>resolve();
+
+        transaction.onerror =
+            ()=>reject(transaction.error);
+    });
+}
+
+async function idbGet(storeName,key){
+
+    const db = await openDatabase();
+
+    return new Promise((resolve,reject)=>{
+
+        const transaction =
+            db.transaction(storeName,"readonly");
+
+        const store =
+            transaction.objectStore(storeName);
+
+        const request =
+            store.get(key);
+
+        request.onsuccess =
+            ()=>resolve(request.result);
+
+        request.onerror =
+            ()=>reject(request.error);
+    });
+}
+
+async function idbDelete(storeName,key){
+
+    const db = await openDatabase();
+
+    return new Promise((resolve,reject)=>{
+
+        const transaction =
+            db.transaction(storeName,"readwrite");
+
+        transaction.objectStore(storeName)
+            .delete(key);
+
+        transaction.oncomplete = ()=>resolve();
+
+        transaction.onerror =
+            ()=>reject(transaction.error);
+    });
+}
+
+/* =========================================================
+   START
+========================================================= */
+
+async function initializeApp(){
+
+    document.getElementById("protocolDate").value =
+        new Date().toISOString().slice(0,10);
+
+    loadApiSettings();
+
+    addTopic();
+
+    try{
+        await openDatabase();
+    }catch(error){
+        console.error("IndexedDB:",error);
+    }
+
+    renderTeam();
+    renderProtocolTable();
+}
+
+initializeApp();
+
+/* =========================================================
+   HILFE
+========================================================= */
+
+function openHelp(){
+    document.getElementById("helpModal")
+        .classList.remove("hidden");
+}
+
+function closeHelp(){
+    document.getElementById("helpModal")
+        .classList.add("hidden");
+}
+
+/* =========================================================
+   API
+========================================================= */
+
+function toggleApiSettings(){
+    document.getElementById("apiSettings")
+        .classList.toggle("hidden");
+}
+
+function toggleApiKey(){
+
+    const field =
+        document.getElementById("apiKey");
+
+    const button =
+        document.getElementById("showKeyButton");
+
+    if(field.type==="password"){
+        field.type="text";
+        button.textContent="Verbergen";
+    }else{
+        field.type="password";
+        button.textContent="Anzeigen";
+    }
+}
+
+function loadApiSettings(){
+
+    try{
+
+        const settings =
+            JSON.parse(
+                localStorage.getItem(
+                    STORAGE_API_SETTINGS
+                ) || "{}"
+            );
+
+        if(settings.transcriptionModel){
+            document.getElementById(
+                "transcriptionModel"
+            ).value=settings.transcriptionModel;
+        }
+
+        if(settings.textModel){
+            document.getElementById(
+                "textModel"
+            ).value=settings.textModel;
+        }
+
+        const key =
+            localStorage.getItem(
+                STORAGE_API_KEY
+            );
+
+        if(key){
+            document.getElementById(
+                "apiKey"
+            ).value=key;
+
+            document.getElementById(
+                "rememberApiKey"
+            ).checked=true;
+        }
+
+    }catch(error){
+        console.error(error);
+    }
+}
+
+function saveApiSettings(){
+
+    const key =
+        document.getElementById("apiKey")
+            .value.trim();
+
+    const remember =
+        document.getElementById(
+            "rememberApiKey"
+        ).checked;
+
+    const settings={
+        transcriptionModel:
+            document.getElementById(
+                "transcriptionModel"
+            ).value.trim(),
+
+        textModel:
+            document.getElementById(
+                "textModel"
+            ).value.trim()
+    };
+
+    localStorage.setItem(
+        STORAGE_API_SETTINGS,
+        JSON.stringify(settings)
+    );
+
+    if(remember && key){
+        localStorage.setItem(
+            STORAGE_API_KEY,key
+        );
+    }else{
+        localStorage.removeItem(
+            STORAGE_API_KEY
+        );
+    }
+
+    setApiStatus(
+        "Einstellungen gespeichert.",
+        true
+    );
+}
+
+function deleteApiKey(){
+
+    localStorage.removeItem(
+        STORAGE_API_KEY
+    );
+
+    document.getElementById(
+        "apiKey"
+    ).value="";
+
+    document.getElementById(
+        "rememberApiKey"
+    ).checked=false;
+
+    setApiStatus(
+        "Gespeicherter API-Key gelöscht.",
+        true
+    );
+}
+
+function getApiKey(){
+
+    const key =
+        document.getElementById(
+            "apiKey"
+        ).value.trim();
+
+    if(!key){
+        throw new Error(
+            "Kein API-Key eingetragen."
+        );
+    }
+
+    return key;
+}
+
+function setApiStatus(message,good){
+
+    const element =
+        document.getElementById(
+            "apiStatus"
+        );
+
+    element.textContent=message;
+
+    element.className=
+        "status-message " +
+        (good
+            ?"status-good"
+            :"status-bad");
+}
+
+async function testApiConnection(){
+
+    const model =
+        document.getElementById(
+            "textModel"
+        ).value.trim();
+
+    if(!model){
+        setApiStatus(
+            "Bitte zuerst ein Textmodell eintragen.",
+            false
+        );
+        return;
+    }
+
+    try{
+
+        setApiStatus(
+            "Verbindung wird geprüft ...",
+            true
+        );
+
+        const response =
+            await fetch(
+                "https://api.openai.com/v1/responses",
+                {
+                    method:"POST",
+
+                    headers:{
+                        "Authorization":
+                            "Bearer "+getApiKey(),
+
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:JSON.stringify({
+                        model:model,
+                        input:"Antworte nur mit OK."
+                    })
+                }
+            );
+
+        if(!response.ok){
+            throw await parseApiError(response);
+        }
+
+        setApiStatus(
+            "API-Verbindung erfolgreich.",
+            true
+        );
+
+    }catch(error){
+
+        setApiStatus(
+            "API-Fehler: "+error.message,
+            false
+        );
+    }
+}
+
+/* =========================================================
+   TEILNEHMER
+========================================================= */
+
+function addMembers(){
+
+    const input =
+        document.getElementById(
+            "memberInput"
+        );
+
+    const names =
+        input.value
+            .split(",")
+            .map(v=>v.trim())
+            .filter(Boolean);
+
+    names.forEach(name=>{
+
+        if(!teamMembers.some(
+            existing=>
+                existing.toLowerCase()===
+                name.toLowerCase()
+        )){
+            teamMembers.push(name);
+        }
+    });
+
+    input.value="";
+
+    renderTeam();
+    renderTopics();
+    renderProtocolTable();
+}
+
+function removeMember(index){
+
+    const name =
+        teamMembers[index];
+
+    if(!confirm(
+        `"${name}" aus der Teilnehmerliste entfernen?\n\n`+
+        "Bestehende Zuständigkeiten bleiben erhalten."
+    )){
+        return;
+    }
+
+    teamMembers.splice(index,1);
+
+    renderTeam();
+    renderTopics();
+}
+
+function renderTeam(){
+
+    const container =
+        document.getElementById(
+            "memberList"
+        );
+
+    if(!teamMembers.length){
+
+        container.innerHTML=
+            '<span class="info">Noch keine Teilnehmer angelegt.</span>';
+
+        return;
+    }
+
+    container.innerHTML=
+        teamMembers.map((member,index)=>`
+            <span class="member">
+                ${escapeHTML(member)}
+
+                <button onclick="removeMember(${index})">
+                    ×
+                </button>
+            </span>
+        `).join("");
+}
+
+/* =========================================================
+   THEMEN
+========================================================= */
+
+function addTopic(){
+
+    topics.push({
+        id:nextTopicId++,
+        title:"",
+        entries:[createEntry()]
+    });
+
+    renderTopics();
+    renderProtocolTable();
+}
+
+function deleteTopic(topicId){
+
+    if(!confirm(
+        "Dieses Thema vollständig löschen?"
+    )){
+        return;
+    }
+
+    topics=
+        topics.filter(
+            topic=>topic.id!==topicId
+        );
+
+    renderTopics();
+    renderProtocolTable();
+}
+
+function addEntry(topicId){
+
+    const topic =
+        topics.find(
+            item=>item.id===topicId
+        );
+
+    if(!topic)return;
+
+    topic.entries.push(
+        createEntry()
+    );
+
+    renderTopics();
+}
+
+function deleteEntry(topicId,entryId){
+
+    const topic =
+        topics.find(
+            item=>item.id===topicId
+        );
+
+    if(!topic)return;
+
+    if(topic.entries.length<=1){
+
+        alert(
+            "Ein Thema benötigt mindestens einen Unterpunkt."
+        );
+
+        return;
+    }
+
+    const entry =
+        topic.entries.find(
+            e=>e.id===entryId
+        );
+
+    if(
+        entry &&
+        (entry.audioStored ||
+         entry.drawingStored)
+    ){
+
+        if(!confirm(
+            "Dieser Unterpunkt besitzt lokal gespeicherte Anhänge.\n\n"+
+            "Unterpunkt trotzdem löschen?\n\n"+
+            "Die Anhänge werden ebenfalls gelöscht."
+        )){
+            return;
+        }
+
+        idbDelete(
+            AUDIO_STORE,
+            entry.uid
+        ).catch(()=>{});
+
+        idbDelete(
+            DRAWING_STORE,
+            entry.uid
+        ).catch(()=>{});
+    }
+
+    topic.entries=
+        topic.entries.filter(
+            e=>e.id!==entryId
+        );
+
+    renderTopics();
+    renderProtocolTable();
+}
+
+function findEntry(topicId,entryId){
+
+    const topic =
+        topics.find(
+            t=>t.id===topicId
+        );
+
+    if(!topic)return null;
+
+    return topic.entries.find(
+        e=>e.id===entryId
+    );
+}
+
+function updateEntry(
+    topicId,
+    entryId,
+    field,
+    value
+){
+
+    const entry =
+        findEntry(
+            topicId,
+            entryId
+        );
+
+    if(!entry)return;
+
+    entry[field]=value;
+
+    renderProtocolTable();
+}
+
+function updateTopicTitle(
+    topicId,
+    value
+){
+
+    const topic =
+        topics.find(
+            t=>t.id===topicId
+        );
+
+    if(topic){
+        topic.title=value;
+    }
+
+    renderProtocolTable();
+}
+
+/* =========================================================
+   ZUSTÄNDIG
+========================================================= */
+
+function toggleResponsibleBox(entryId){
+
+    const box =
+        document.getElementById(
+            "responsibleBox-"+entryId
+        );
+
+    if(box){
+        box.classList.toggle("hidden");
+    }
+}
+
+function toggleResponsibleMember(
+    topicId,
+    entryId,
+    member,
+    checked
+){
+
+    const entry =
+        findEntry(topicId,entryId);
+
+    if(!entry)return;
+
+    if(!Array.isArray(entry.members)){
+        entry.members=[];
+    }
+
+    if(checked){
+
+        if(!entry.members.includes(member)){
+            entry.members.push(member);
+        }
+
+    }else{
+
+        entry.members=
+            entry.members.filter(
+                item=>item!==member
+            );
+    }
+
+    updateResponsibleSummary(entryId);
+    renderProtocolTable();
+}
+
+function updateAdditionalMembers(
+    topicId,
+    entryId,
+    value
+){
+
+    const entry =
+        findEntry(topicId,entryId);
+
+    if(!entry)return;
+
+    entry.additionalMembers=value;
+
+    updateResponsibleSummary(entryId);
+    renderProtocolTable();
+}
+
+function getResponsibleNames(entry){
+
+    const result=[];
+
+    (entry.members||[]).forEach(name=>{
+        if(name && !result.includes(name)){
+            result.push(name);
+        }
+    });
+
+    if(entry.additionalMembers){
+
+        entry.additionalMembers
+            .split(",")
+            .map(v=>v.trim())
+            .filter(Boolean)
+            .forEach(name=>{
+
+                if(!result.includes(name)){
+                    result.push(name);
+                }
+            });
+    }
+
+    return result;
+}
+
+function responsibleText(entry){
+
+    const names =
+        getResponsibleNames(entry);
+
+    return names.length
+        ?names.join(", ")
+        :"Nicht zugeordnet";
+}
+
+function updateResponsibleSummary(entryId){
+
+    let entry=null;
+
+    topics.some(topic=>{
+
+        entry=
+            topic.entries.find(
+                e=>e.id===entryId
+            );
+
+        return !!entry;
+    });
+
+    if(!entry)return;
+
+    const element =
+        document.getElementById(
+            "responsibleText-"+entryId
+        );
+
+    if(element){
+        element.textContent=
+            responsibleText(entry);
+    }
+}
+
+function selectedOption(value,current){
+
+    return `
+        <option
+            value="${escapeAttribute(value)}"
+            ${value===current?"selected":""}>
+            ${escapeHTML(value)}
+        </option>
+    `;
+}
+
+/* =========================================================
+   EDITOR RENDERN
+========================================================= */
+
+function renderTopics(){
+
+    const container =
+        document.getElementById(
+            "topicsContainer"
+        );
+
+    if(!topics.length){
+
+        container.innerHTML=
+            '<p class="info">Noch keine Themen vorhanden.</p>';
+
+        return;
+    }
+
+    container.innerHTML="";
+
+    topics.forEach(
+        (topic,topicIndex)=>{
+
+        const topicElement =
+            document.createElement("div");
+
+        topicElement.className="topic";
+
+        let entriesHTML="";
+
+        topic.entries.forEach(
+            (entry,entryIndex)=>{
+
+            if(!entry.uid){
+                entry.uid=createUUID();
+            }
+
+            const selectable=[
+                ...teamMembers
+            ];
+
+            (entry.members||[])
+                .forEach(name=>{
+
+                    if(!selectable.includes(name)){
+                        selectable.push(name);
+                    }
+                });
+
+            const memberCheckboxes =
+                selectable.length
+                ? selectable.map(member=>`
+
+                    <label class="responsible-person">
+
+                    <input
+                    type="checkbox"
+                    ${entry.members.includes(member)
+                        ?"checked":""}
+
+                    onchange='toggleResponsibleMember(
+                        ${topic.id},
+                        ${entry.id},
+                        ${JSON.stringify(member)},
+                        this.checked
+                    )'>
+
+                    ${escapeHTML(member)}
+
+                    </label>
+
+                `).join("")
+                :'<div class="info">Noch keine Teilnehmer angelegt.</div>';
+
+            entriesHTML+=`
+
+<div class="entry">
+
+<div class="entry-meta">
+
+<div class="entry-number">
+${topicIndex+1}.${entryIndex+1}
+</div>
+
+<div class="responsible-holder">
+
+<label>Zuständig</label>
+
+<div class="responsible-summary"
+     onclick="toggleResponsibleBox(${entry.id})">
+
+<span id="responsibleText-${entry.id}"
+      class="responsible-text">
+${escapeHTML(responsibleText(entry))}
+</span>
+
+<span>▼</span>
+
+</div>
+
+<div id="responsibleBox-${entry.id}"
+     class="responsible-box hidden">
+
+<label>Teilnehmer auswählen</label>
+
+${memberCheckboxes}
+
+<div class="responsible-free">
+
+<label>Weitere / externe Personen</label>
+
+<input
+value="${escapeAttribute(entry.additionalMembers||"")}"
+placeholder="Externer Planer, Firma XYZ"
+oninput="updateAdditionalMembers(
+    ${topic.id},
+    ${entry.id},
+    this.value
+)">
+
+</div>
+
+<div class="row" style="margin-top:8px">
+
+<button class="primary small-button"
+onclick="toggleResponsibleBox(${entry.id})">
+Übernehmen
+</button>
+
+</div>
+
+</div>
+</div>
+
+<div>
+<label>Attribut</label>
+
+<select onchange="updateEntry(
+${topic.id},
+${entry.id},
+'type',
+this.value
+)">
+${selectedOption("Info",entry.type)}
+${selectedOption("Aufgabe",entry.type)}
+${selectedOption("Entscheidung",entry.type)}
+${selectedOption("Frage",entry.type)}
+${selectedOption("Hinweis",entry.type)}
+${selectedOption("Termin",entry.type)}
+</select>
+</div>
+
+<div>
+<label>Status</label>
+
+<select onchange="updateEntry(
+${topic.id},
+${entry.id},
+'status',
+this.value
+)">
+${selectedOption("Offen",entry.status)}
+${selectedOption("In Arbeit",entry.status)}
+${selectedOption("Erledigt",entry.status)}
+${selectedOption("Zurückgestellt",entry.status)}
+</select>
+</div>
+
+<div>
+<label>Termin</label>
+
+<input type="date"
+value="${escapeAttribute(entry.dueDate)}"
+onchange="updateEntry(
+${topic.id},
+${entry.id},
+'dueDate',
+this.value
+)">
+</div>
+
+</div>
+
+<label>Protokolltext</label>
+
+<textarea
+id="text-${entry.id}"
+placeholder="Protokolltext ..."
+oninput="updateEntry(
+${topic.id},
+${entry.id},
+'text',
+this.value
+)">${escapeHTML(entry.text)}</textarea>
+
+<!-- AUDIO -->
+
+<div class="audio-area">
+
+<div class="audio-title">
+Audio, Sprache & Stiftnotiz
+</div>
+
+<div class="row">
+
+<button
+id="recordButton-${entry.id}"
+class="warning"
+onclick="toggleRecording(
+${topic.id},
+${entry.id}
+)">
+● Aufnahme starten
+</button>
+
+<button
+id="dictationButton-${entry.id}"
+class="audio-button"
+onclick="toggleDictation(
+${topic.id},
+${entry.id}
+)">
+🎙 Live-Diktat
+</button>
+
+<button
+class="secondary"
+${entry.audioBlob?"":"disabled"}
+onclick="downloadAudio(
+${topic.id},
+${entry.id}
+)">
+Audio-Datei exportieren
+</button>
+
+<button
+class="success"
+${entry.audioBlob?"":"disabled"}
+onclick="storeAudio(
+${topic.id},
+${entry.id},
+this
+)">
+Aufnahme lokal speichern
+</button>
+
+<button
+class="danger"
+${entry.audioStored?"":"disabled"}
+onclick="deleteStoredAudio(
+${topic.id},
+${entry.id}
+)">
+Gespeichertes Audio löschen
+</button>
+
+<button
+class="primary"
+${entry.audioBlob?"":"disabled"}
+onclick="transcribeRecordedAudio(
+${topic.id},
+${entry.id},
+this
+)">
+Audio → Text per API
+</button>
+
+<button
+class="secondary"
+onclick="openDrawing(
+${topic.id},
+${entry.id}
+)">
+✎ Stiftnotiz
+</button>
+
+</div>
+
+${entry.audioURL?`
+<audio controls src="${entry.audioURL}"></audio>
+`:""}
+
+<div class="badges">
+
+${entry.audioStored?`
+<span class="badge badge-audio">
+● Audio gespeichert
+</span>
+`:""}
+
+${entry.drawingStored?`
+<span class="badge badge-pencil">
+✎ Stiftnotiz vorhanden
+</span>
+`:""}
+
+</div>
+
+<div id="audioStatus-${entry.id}"
+     class="status-message">
+</div>
+
+</div>
+
+<!-- TRANSKRIPTION -->
+
+<div class="transcript-area">
+
+<label>Rohtranskription / Diktat</label>
+
+<textarea
+id="transcript-${entry.id}"
+placeholder="Transkription ..."
+oninput="updateEntry(
+${topic.id},
+${entry.id},
+'transcript',
+this.value
+)">${escapeHTML(entry.transcript)}</textarea>
+
+<div class="row" style="margin-top:8px">
+
+<button class="success"
+onclick="useTranscript(
+${topic.id},
+${entry.id}
+)">
+In Protokoll übernehmen
+</button>
+
+<button class="ai"
+onclick="directAI(
+${topic.id},
+${entry.id},
+'precise',
+this
+)">
+KI präzisieren
+</button>
+
+<button class="ai"
+onclick="directAI(
+${topic.id},
+${entry.id},
+'summary',
+this
+)">
+KI zusammenfassen
+</button>
+
+<button class="secondary"
+onclick="openManualAI(
+${topic.id},
+${entry.id}
+)">
+Manuelle KI-Hilfe
+</button>
+
+<button class="danger"
+onclick="deleteEntry(
+${topic.id},
+${entry.id}
+)">
+Unterpunkt löschen
+</button>
+
+</div>
+
+<div id="aiResult-${entry.id}"></div>
+
+</div>
+
+<div id="manualAI-${entry.id}"
+     class="ai-area hidden">
+</div>
+
+</div>
+`;
+        });
+
+        topicElement.innerHTML=`
+
+<div class="topic-header">
+
+<div class="topic-number">
+${topicIndex+1}
+</div>
+
+<div>
+<label>Thema / Überschrift</label>
+
+<input
+value="${escapeAttribute(topic.title)}"
+placeholder="Thema eingeben ..."
+oninput="updateTopicTitle(
+${topic.id},
+this.value
+)">
+</div>
+
+<button class="danger"
+onclick="deleteTopic(${topic.id})">
+Thema löschen
+</button>
+
+</div>
+
+${entriesHTML}
+
+<div class="row" style="padding:13px">
+
+<button class="secondary"
+onclick="addEntry(${topic.id})">
++ Unterpunkt
+</button>
+
+</div>
+`;
+
+        container.appendChild(
+            topicElement
+        );
+    });
+}
+
+/* =========================================================
+   AUDIO AUFNEHMEN
+========================================================= */
+
+async function toggleRecording(
+    topicId,
+    entryId
+){
+
+    if(
+        mediaRecorder &&
+        mediaRecorder.state==="recording"
+    ){
+        mediaRecorder.stop();
+        return;
+    }
+
+    try{
+
+        const stream =
+            await navigator.mediaDevices
+                .getUserMedia({
+                    audio:true
+                });
+
+        audioChunks=[];
+
+        let options={};
+
+        if(
+            MediaRecorder.isTypeSupported(
+                "audio/webm;codecs=opus"
+            )
+        ){
+            options.mimeType=
+                "audio/webm;codecs=opus";
+        }
+
+        mediaRecorder=
+            new MediaRecorder(
+                stream,
+                options
+            );
+
+        activeRecording={
+            topicId,
+            entryId,
+            stream
+        };
+
+        mediaRecorder.ondataavailable=
+            event=>{
+
+                if(event.data.size){
+                    audioChunks.push(
+                        event.data
+                    );
+                }
+            };
+
+        mediaRecorder.onstop=
+            function(){
+
+                const rec =
+                    activeRecording;
+
+                const entry =
+                    findEntry(
+                        rec.topicId,
+                        rec.entryId
+                    );
+
+                const mime =
+                    mediaRecorder.mimeType ||
+                    "audio/webm";
+
+                const blob =
+                    new Blob(
+                        audioChunks,
+                        {type:mime}
+                    );
+
+                if(entry){
+
+                    if(entry.audioURL){
+                        URL.revokeObjectURL(
+                            entry.audioURL
+                        );
+                    }
+
+                    entry.audioBlob=blob;
+                    entry.audioType=mime;
+
+                    entry.audioURL=
+                        URL.createObjectURL(
+                            blob
+                        );
+
+                    /*
+                      Neue Aufnahme ist zunächst
+                      noch NICHT dauerhaft gespeichert.
+                    */
+
+                    entry.audioStored=false;
+                }
+
+                rec.stream
+                    .getTracks()
+                    .forEach(
+                        track=>track.stop()
+                    );
+
+                mediaRecorder=null;
+                activeRecording=null;
+
+                renderTopics();
+            };
+
+        mediaRecorder.start();
+
+        const button =
+            document.getElementById(
+                "recordButton-"+entryId
+            );
+
+        if(button){
+            button.textContent=
+                "■ Aufnahme stoppen";
+
+            button.classList.add(
+                "recording"
+            );
+        }
+
+        setAudioStatus(
+            entryId,
+            "Audioaufnahme läuft ..."
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "Mikrofon konnte nicht geöffnet werden:\n"+
+            error.message
+        );
+    }
+}
+
+/* =========================================================
+   AUDIO INDEXEDDB
+========================================================= */
+
+async function storeAudio(
+    topicId,
+    entryId,
+    button
+){
+
+    const entry =
+        findEntry(topicId,entryId);
+
+    if(!entry || !entry.audioBlob){
+
+        alert(
+            "Keine Aufnahme vorhanden."
+        );
+
+        return;
+    }
+
+    const old =
+        button.textContent;
+
+    try{
+
+        button.disabled=true;
+        button.textContent=
+            "Speichere ...";
+
+        await idbPut(
+            AUDIO_STORE,
+            {
+                uid:entry.uid,
+                blob:entry.audioBlob,
+                type:entry.audioType,
+                savedAt:
+                    new Date().toISOString()
+            }
+        );
+
+        entry.audioStored=true;
+
+        setAudioStatus(
+            entryId,
+            "Aufnahme wurde dauerhaft lokal gespeichert."
+        );
+
+        renderTopics();
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "Audio konnte nicht lokal gespeichert werden:\n"+
+            error.message
+        );
+
+    }finally{
+
+        button.disabled=false;
+        button.textContent=old;
+    }
+}
+
+async function loadEntryAttachments(
+    entry
+){
+
+    if(!entry.uid)return;
+
+    try{
+
+        const audio =
+            await idbGet(
+                AUDIO_STORE,
+                entry.uid
+            );
+
+        if(audio && audio.blob){
+
+            entry.audioBlob=
+                audio.blob;
+
+            entry.audioType=
+                audio.type ||
+                audio.blob.type;
+
+            if(entry.audioURL){
+                URL.revokeObjectURL(
+                    entry.audioURL
+                );
+            }
+
+            entry.audioURL=
+                URL.createObjectURL(
+                    audio.blob
+                );
+
+            entry.audioStored=true;
+
+        }else{
+
+            entry.audioStored=false;
+        }
+
+        const drawing =
+            await idbGet(
+                DRAWING_STORE,
+                entry.uid
+            );
+
+        entry.drawingStored=
+            !!(
+                drawing &&
+                drawing.dataURL
+            );
+
+    }catch(error){
+
+        console.error(
+            "Anhänge konnten nicht geladen werden:",
+            error
+        );
+    }
+}
+
+async function loadAllAttachments(){
+
+    const jobs=[];
+
+    topics.forEach(topic=>{
+
+        topic.entries.forEach(entry=>{
+
+            jobs.push(
+                loadEntryAttachments(entry)
+            );
+        });
+    });
+
+    await Promise.all(jobs);
+
+    renderTopics();
+}
+
+async function deleteStoredAudio(
+    topicId,
+    entryId
+){
+
+    const entry =
+        findEntry(topicId,entryId);
+
+    if(!entry)return;
+
+    if(!confirm(
+        "Die lokal gespeicherte Audioaufnahme dieses Unterpunktes löschen?"
+    )){
+        return;
+    }
+
+    try{
+
+        await idbDelete(
+            AUDIO_STORE,
+            entry.uid
+        );
+
+        if(entry.audioURL){
+
+            URL.revokeObjectURL(
+                entry.audioURL
+            );
+        }
+
+        entry.audioBlob=null;
+        entry.audioURL=null;
+        entry.audioType="";
+        entry.audioStored=false;
+
+        renderTopics();
+
+    }catch(error){
+
+        alert(
+            "Audio konnte nicht gelöscht werden."
+        );
+    }
+}
+
+/* =========================================================
+   AUDIO EXPORT
+========================================================= */
+
+function downloadAudio(
+    topicId,
+    entryId
+){
+
+    const entry =
+        findEntry(topicId,entryId);
+
+    if(!entry || !entry.audioBlob){
+        return;
+    }
+
+    let extension="webm";
+
+    const type=
+        entry.audioType||"";
+
+    if(type.includes("ogg")){
+        extension="ogg";
+    }
+
+    if(type.includes("mp4")){
+        extension="m4a";
+    }
+
+    if(type.includes("wav")){
+        extension="wav";
+    }
+
+    downloadBlob(
+        entry.audioBlob,
+        `aufnahme_${topicId}_${entryId}.${extension}`
+    );
+}
+
+/* =========================================================
+   LIVE DIKTAT
+========================================================= */
+
+function toggleDictation(
+    topicId,
+    entryId
+){
+
+    const Recognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+    if(!Recognition){
+
+        alert(
+            "Live-Diktat wird von diesem Browser nicht unterstützt."
+        );
+
+        return;
+    }
+
+    if(activeRecognition){
+
+        activeRecognition.stop();
+        return;
+    }
+
+    const entry =
+        findEntry(topicId,entryId);
+
+    const recognition =
+        new Recognition();
+
+    recognition.lang="de-DE";
+    recognition.continuous=true;
+    recognition.interimResults=true;
+
+    let confirmed =
+        entry.transcript.trim();
+
+    if(confirmed){
+        confirmed+=" ";
+    }
+
+    let interim="";
+
+    recognition.onstart=()=>{
+
+        activeRecognition=
+            recognition;
+
+        const button =
+            document.getElementById(
+                "dictationButton-"+entryId
+            );
+
+        if(button){
+
+            button.textContent=
+                "■ Diktat stoppen";
+
+            button.classList.add(
+                "dictating"
+            );
+        }
+    };
+
+    recognition.onresult=
+        event=>{
+
+            interim="";
+
+            for(
+                let i=event.resultIndex;
+                i<event.results.length;
+                i++
+            ){
+
+                const text=
+                    event.results[i][0]
+                        .transcript;
+
+                if(
+                    event.results[i]
+                        .isFinal
+                ){
+
+                    confirmed+=
+                        text.trim()+" ";
+
+                }else{
+
+                    interim+=text;
+                }
+            }
+
+            entry.transcript=
+                (confirmed+interim)
+                    .trim();
+
+            const textarea =
+                document.getElementById(
+                    "transcript-"+entryId
+                );
+
+            if(textarea){
+                textarea.value=
+                    entry.transcript;
+            }
+        };
+
+    recognition.onend=()=>{
+
+        entry.transcript=
+            (confirmed+interim)
+                .trim();
+
+        activeRecognition=null;
+
+        renderTopics();
+        renderProtocolTable();
+    };
+
+    recognition.start();
+}
+
+/* =========================================================
+   AUDIO TRANSKRIPTION
+========================================================= */
+
+async function transcribeRecordedAudio(
+    topicId,
+    entryId,
+    button
+){
+
+    const entry =
+        findEntry(topicId,entryId);
+
+    if(!entry || !entry.audioBlob){
+
+        alert(
+            "Keine Audioaufnahme vorhanden."
+        );
+
+        return;
+    }
+
+    let key;
+
+    try{
+        key=getApiKey();
+    }catch(error){
+
+        document.getElementById(
+            "apiSettings"
+        ).classList.remove("hidden");
+
+        alert(
+            "Für die Audio-Transkription wird ein API-Key benötigt."
+        );
+
+        return;
+    }
+
+    const model =
+        document.getElementById(
+            "transcriptionModel"
+        ).value.trim();
+
+    const old =
+        button.textContent;
+
+    try{
+
+        button.disabled=true;
+        button.textContent=
+            "Transkribiere ...";
+
+        let ext="webm";
+
+        if(entry.audioType.includes("ogg")){
+            ext="ogg";
+        }
+
+        if(entry.audioType.includes("mp4")){
+            ext="m4a";
+        }
+
+        const file =
+            new File(
+                [entry.audioBlob],
+                "aufnahme."+ext,
+                {
+                    type:
+                        entry.audioType||
+                        "audio/webm"
+                }
+            );
+
+        const form =
+            new FormData();
+
+        form.append("file",file);
+        form.append("model",model);
+        form.append("language","de");
+
+        const response =
+            await fetch(
+                "https://api.openai.com/v1/audio/transcriptions",
+                {
+                    method:"POST",
+
+                    headers:{
+                        "Authorization":
+                            "Bearer "+key
+                    },
+
+                    body:form
+                }
+            );
+
+        if(!response.ok){
+            throw await parseApiError(
+                response
+            );
+        }
+
+        const data =
+            await response.json();
+
+        entry.transcript=
+            (data.text||"").trim();
+
+        renderTopics();
+        renderProtocolTable();
+
+    }catch(error){
+
+        alert(
+            "Transkriptionsfehler:\n"+
+            error.message
+        );
+
+    }finally{
+
+        button.disabled=false;
+        button.textContent=old;
+    }
+}
+
+function setAudioStatus(
+    entryId,
+    message
+){
+
+    const el =
+        document.getElementById(
+            "audioStatus-"+entryId
+        );
+
+    if(el){
+        el.textContent=message;
+    }
+}
+
+/* =========================================================
+   TRANSKRIPTION ÜBERNEHMEN
+========================================================= */
+
+function useTranscript(
+    topicId,
+    entryId
+){
+
+    const entry =
+        findEntry(topicId,entryId);
+
+    if(!entry)return;
+
+    const textarea =
+        document.getElementById(
+            "transcript-"+entryId
+        );
+
+    const value =
+        textarea
+            ?textarea.value.trim()
+            :entry.transcript.trim();
+
+    if(!value){
+
+        alert(
+            "Keine Transkription vorhanden."
+        );
+
+        return;
+    }
+
+    entry.previousText=
+        entry.text;
+
+    entry.transcript=value;
+    entry.text=value;
+
+    renderTopics();
+    renderProtocolTable();
+}
+
+/* =========================================================
+   APPLE PENCIL / ZEICHNEN
+========================================================= */
+
+const canvas =
+    document.getElementById(
+        "drawingCanvas"
+    );
+
+const ctx =
+    canvas.getContext("2d");
+
+let drawingTopicId=null;
+let drawingEntryId=null;
+
+let drawing=false;
+let lastX=0;
+let lastY=0;
+
+let drawingHistory=[];
+
+function resizeCanvas(){
+
+    const wrap =
+        document.getElementById(
+            "canvasWrap"
+        );
+
+    const rect =
+        wrap.getBoundingClientRect();
+
+    const oldImage =
+        canvas.width && canvas.height
+        ?canvas.toDataURL()
+        :null;
+
+    const ratio =
+        window.devicePixelRatio||1;
+
+    canvas.width=
+        Math.max(
+            1,
+            Math.floor(
+                rect.width*ratio
+            )
+        );
+
+    canvas.height=
+        Math.max(
+            1,
+            Math.floor(
+                rect.height*ratio
+            )
+        );
+
+    ctx.setTransform(
+        ratio,0,0,ratio,0,0
+    );
+
+    ctx.lineCap="round";
+    ctx.lineJoin="round";
+
+    fillCanvasWhite();
+
+    if(oldImage){
+        loadImageToCanvas(
+            oldImage,
+            false
+        );
+    }
+}
+
+function fillCanvasWhite(){
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+    ctx.save();
+
+    ctx.fillStyle="white";
+
+    ctx.fillRect(
+        0,
+        0,
+        rect.width,
+        rect.height
+    );
+
+    ctx.restore();
+}
+
+function getCanvasPoint(event){
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+    return {
+        x:event.clientX-rect.left,
+        y:event.clientY-rect.top
+    };
+}
+
+canvas.addEventListener(
+    "pointerdown",
+    event=>{
+
+        event.preventDefault();
+
+        canvas.setPointerCapture(
+            event.pointerId
+        );
+
+        saveDrawingState();
+
+        drawing=true;
+
+        const p =
+            getCanvasPoint(event);
+
+        lastX=p.x;
+        lastY=p.y;
+    }
+);
+
+canvas.addEventListener(
+    "pointermove",
+    event=>{
+
+        if(!drawing)return;
+
+        event.preventDefault();
+
+        const p =
+            getCanvasPoint(event);
+
+        const baseWidth =
+            Number(
+                document.getElementById(
+                    "penWidth"
+                ).value
+            );
+
+        /*
+          Bei Apple Pencil bzw. druckfähigen
+          Stiften wird der Druck leicht
+          berücksichtigt.
+        */
+
+        let width=
+            baseWidth;
+
+        if(
+            event.pointerType==="pen" &&
+            event.pressure>0
+        ){
+            width=
+                Math.max(
+                    1,
+                    baseWidth *
+                    (.45 + event.pressure)
+                );
+        }
+
+        ctx.strokeStyle="#111827";
+        ctx.lineWidth=width;
+        ctx.lineCap="round";
+        ctx.lineJoin="round";
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            lastX,
+            lastY
+        );
+
+        ctx.lineTo(
+            p.x,
+            p.y
+        );
+
+        ctx.stroke();
+
+        lastX=p.x;
+        lastY=p.y;
+    }
+);
+
+function stopDrawing(event){
+
+    if(!drawing)return;
+
+    drawing=false;
+
+    if(
+        event &&
+        canvas.hasPointerCapture(
+            event.pointerId
+        )
+    ){
+        canvas.releasePointerCapture(
+            event.pointerId
+        );
+    }
+}
+
+canvas.addEventListener(
+    "pointerup",
+    stopDrawing
+);
+
+canvas.addEventListener(
+    "pointercancel",
+    stopDrawing
+);
+
+canvas.addEventListener(
+    "pointerleave",
+    event=>{
+
+        if(
+            event.pointerType==="mouse"
+        ){
+            stopDrawing(event);
+        }
+    }
+);
+
+function saveDrawingState(){
+
+    drawingHistory.push(
+        canvas.toDataURL("image/png")
+    );
+
+    if(drawingHistory.length>30){
+        drawingHistory.shift();
+    }
+}
+
+function undoDrawing(){
+
+    if(!drawingHistory.length){
+        return;
+    }
+
+    const image =
+        drawingHistory.pop();
+
+    loadImageToCanvas(
+        image,
+        true
+    );
+}
+
+function clearDrawing(){
+
+    saveDrawingState();
+
+    fillCanvasWhite();
+}
+
+async function openDrawing(
+    topicId,
+    entryId
+){
+
+    drawingTopicId=topicId;
+    drawingEntryId=entryId;
+
+    const entry =
+        findEntry(
+            topicId,
+            entryId
+        );
+
+    if(!entry)return;
+
+    document.getElementById(
+        "drawingModal"
+    ).classList.remove("hidden");
+
+    document.getElementById(
+        "drawingTitle"
+    ).textContent=
+        "Unterpunkt "+getEntryNumber(
+            topicId,
+            entryId
+        );
+
+    /*
+      Erst nachdem Modal sichtbar ist,
+      besitzt der Container eine Größe.
+    */
+
+    await new Promise(
+        resolve=>
+            requestAnimationFrame(
+                ()=>requestAnimationFrame(
+                    resolve
+                )
+            )
+    );
+
+    resizeCanvas();
+
+    drawingHistory=[];
+
+    try{
+
+        const stored =
+            await idbGet(
+                DRAWING_STORE,
+                entry.uid
+            );
+
+        if(
+            stored &&
+            stored.dataURL
+        ){
+
+            await loadImageToCanvas(
+                stored.dataURL,
+                true
+            );
+
+            entry.drawingStored=true;
+
+        }else{
+
+            fillCanvasWhite();
+
+            entry.drawingStored=false;
+        }
+
+    }catch(error){
+
+        console.error(error);
+
+        fillCanvasWhite();
+    }
+
+    document.getElementById(
+        "deleteDrawingButton"
+    ).disabled=
+        !entry.drawingStored;
+}
+
+function closeDrawingModal(){
+
+    document.getElementById(
+        "drawingModal"
+    ).classList.add("hidden");
+
+    drawingTopicId=null;
+    drawingEntryId=null;
+    drawingHistory=[];
+}
+
+function loadImageToCanvas(
+    dataURL,
+    clearFirst=true
+){
+
+    return new Promise(
+        (resolve,reject)=>{
+
+            const image =
+                new Image();
+
+            image.onload=()=>{
+
+                const rect =
+                    canvas.getBoundingClientRect();
+
+                if(clearFirst){
+                    fillCanvasWhite();
+                }
+
+                ctx.drawImage(
+                    image,
+                    0,
+                    0,
+                    rect.width,
+                    rect.height
+                );
+
+                resolve();
+            };
+
+            image.onerror=reject;
+
+            image.src=dataURL;
+        }
+    );
+}
+
+async function saveDrawing(){
+
+    if(
+        drawingTopicId===null ||
+        drawingEntryId===null
+    ){
+        return;
+    }
+
+    const entry =
+        findEntry(
+            drawingTopicId,
+            drawingEntryId
+        );
+
+    if(!entry)return;
+
+    try{
+
+        const dataURL =
+            canvas.toDataURL(
+                "image/png"
+            );
+
+        await idbPut(
+            DRAWING_STORE,
+            {
+                uid:entry.uid,
+                dataURL:dataURL,
+                savedAt:
+                    new Date()
+                        .toISOString()
+            }
+        );
+
+        entry.drawingStored=true;
+
+        alert(
+            "Stiftnotiz wurde lokal gespeichert."
+        );
+
+        closeDrawingModal();
+
+        renderTopics();
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "Stiftnotiz konnte nicht gespeichert werden."
+        );
+    }
+}
+
+async function deleteCurrentDrawing(){
+
+    if(
+        drawingTopicId===null ||
+        drawingEntryId===null
+    ){
+        return;
+    }
+
+    const entry =
+        findEntry(
+            drawingTopicId,
+            drawingEntryId
+        );
+
+    if(!entry)return;
+
+    if(!confirm(
+        "Gespeicherte Stiftnotiz dieses Unterpunktes löschen?"
+    )){
+        return;
+    }
+
+    await idbDelete(
+        DRAWING_STORE,
+        entry.uid
+    );
+
+    entry.drawingStored=false;
+
+    drawingHistory=[];
+
+    fillCanvasWhite();
+
+    document.getElementById(
+        "deleteDrawingButton"
+    ).disabled=true;
+
+    renderTopics();
+
+    alert(
+        "Gespeicherte Stiftnotiz wurde gelöscht."
+    );
+}
+
+function getEntryNumber(
+    topicId,
+    entryId
+){
+
+    const ti =
+        topics.findIndex(
+            t=>t.id===topicId
+        );
+
+    if(ti<0)return "";
+
+    const ei =
+        topics[ti].entries
+            .findIndex(
+                e=>e.id===entryId
+            );
+
+    if(ei<0)return "";
+
+    return `${ti+1}.${ei+1}`;
+}
+
+/* =========================================================
+   KI DIREKT
+========================================================= */
+
+async function directAI(
+    topicId,
+    entryId,
+    mode,
+    button
+){
+
+    const topic =
+        topics.find(
+            t=>t.id===topicId
+        );
+
+    const entry =
+        findEntry(topicId,entryId);
+
+    if(!topic || !entry)return;
+
+    const source =
+        entry.text.trim() ||
+        entry.transcript.trim();
+
+    if(!source){
+
+        alert(
+            "Es ist kein Text vorhanden."
+        );
+
+        return;
+    }
+
+    const model =
+        document.getElementById(
+            "textModel"
+        ).value.trim();
+
+    if(!model){
+
+        document.getElementById(
+            "apiSettings"
+        ).classList.remove("hidden");
+
+        alert(
+            "Bitte zuerst ein Textmodell eintragen."
+        );
+
+        return;
+    }
+
+    const instruction =
+        mode==="summary"
+
+        ?"Fasse den folgenden Beitrag kurz, präzise und sachlich für ein Besprechungsprotokoll zusammen."
+
+        :"Formuliere den folgenden Beitrag professionell, präzise und sachlich für ein Besprechungsprotokoll.";
+
+    const prompt=`
+${instruction}
+
+Keine Informationen erfinden.
+Namen, Zahlen, Termine, Aufgaben und Entscheidungen erhalten.
+Nur den fertigen Protokolltext ausgeben.
+
+THEMA:
+${topic.title||"Keine Angabe"}
+
+ATTRIBUT:
+${entry.type}
+
+ZUSTÄNDIG:
+${responsibleText(entry)}
+
+STATUS:
+${entry.status}
+
+TERMIN:
+${entry.dueDate||"Keine Angabe"}
+
+TEXT:
+${source}
+`;
+
+    const old=
+        button.textContent;
+
+    try{
+
+        button.disabled=true;
+        button.textContent=
+            "KI arbeitet ...";
+
+        const result =
+            await callTextAI(prompt);
+
+        showAIResult(
+            topicId,
+            entryId,
+            result
+        );
+
+    }catch(error){
+
+        alert(
+            "KI-Fehler:\n"+
+            error.message
+        );
+
+    }finally{
+
+        button.disabled=false;
+        button.textContent=old;
+    }
+}
+
+async function callTextAI(prompt){
+
+    const response =
+        await fetch(
+            "https://api.openai.com/v1/responses",
+            {
+                method:"POST",
+
+                headers:{
+                    "Authorization":
+                        "Bearer "+getApiKey(),
+
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:JSON.stringify({
+                    model:
+                        document.getElementById(
+                            "textModel"
+                        ).value.trim(),
+
+                    input:prompt
+                })
+            }
+        );
+
+    if(!response.ok){
+        throw await parseApiError(
+            response
+        );
+    }
+
+    const data =
+        await response.json();
+
+    return extractResponseText(
+        data
+    ).trim();
+}
+
+function extractResponseText(data){
+
+    if(data.output_text){
+        return data.output_text;
+    }
+
+    const parts=[];
+
+    (data.output||[])
+        .forEach(item=>{
+
+            (item.content||[])
+                .forEach(content=>{
+
+                    if(
+                        content.type===
+                        "output_text"
+                    ){
+                        parts.push(
+                            content.text
+                        );
+                    }
+                });
+        });
+
+    return parts.join("\n");
+}
+
+function showAIResult(
+    topicId,
+    entryId,
+    result
+){
+
+    const entry =
+        findEntry(topicId,entryId);
+
+    document.getElementById(
+        "aiResult-"+entryId
+    ).innerHTML=`
+
+<div class="ai-area">
+
+<h3>KI-Vorschlag</h3>
+
+<div class="grid2">
+
+<div>
+<label>Aktuell</label>
+<textarea readonly>${escapeHTML(entry.text)}</textarea>
+</div>
+
+<div>
+<label>KI-Vorschlag</label>
+<textarea id="directAIResult-${entryId}">${escapeHTML(result)}</textarea>
+</div>
+
+</div>
+
+<div class="row" style="margin-top:8px">
+
+<button class="success"
+onclick="acceptDirectAI(
+${topicId},
+${entryId}
+)">
+Übernehmen
+</button>
+
+<button class="secondary"
+onclick="document.getElementById(
+'aiResult-${entryId}'
+).innerHTML=''">
+Verwerfen
+</button>
+
+</div>
+
+</div>
+`;
+}
+
+function acceptDirectAI(
+    topicId,
+    entryId
+){
+
+    const entry =
+        findEntry(topicId,entryId);
+
+    const result =
+        document.getElementById(
+            "directAIResult-"+entryId
+        ).value.trim();
+
+    entry.previousText=
+        entry.text;
+
+    entry.text=result;
+
+    renderTopics();
+    renderProtocolTable();
+}
+
+/* =========================================================
+   MANUELLE KI
+========================================================= */
+
+function openManualAI(
+    topicId,
+    entryId
+){
+
+    const panel =
+        document.getElementById(
+            "manualAI-"+entryId
+        );
+
+    panel.classList.remove(
+        "hidden"
+    );
+
+    panel.innerHTML=`
+
+<h3>Manuelle KI-Hilfe</h3>
+
+<label>Prompt</label>
+
+<textarea
+id="manualPrompt-${entryId}"
+class="prompt"
+readonly>
+</textarea>
+
+<div class="row">
+
+<button class="ai"
+onclick="copyTextarea(
+'manualPrompt-${entryId}'
+)">
+Prompt kopieren
+</button>
+
+</div>
+
+<br>
+
+<label>Antwort der KI</label>
+
+<textarea
+id="manualResult-${entryId}"
+placeholder="KI-Antwort hier einfügen ...">
+</textarea>
+
+<div class="row" style="margin-top:8px">
+
+<button class="success"
+onclick="acceptManualAI(
+${topicId},
+${entryId}
+)">
+Übernehmen
+</button>
+
+<button class="secondary"
+onclick="document.getElementById(
+'manualAI-${entryId}'
+).classList.add('hidden')">
+Schließen
+</button>
+
+</div>
+`;
+
+    const topic =
+        topics.find(
+            t=>t.id===topicId
+        );
+
+    const entry =
+        findEntry(topicId,entryId);
+
+    document.getElementById(
+        "manualPrompt-"+entryId
+    ).value=`
+
+Formuliere den folgenden Text professionell,
+präzise und sachlich für ein Besprechungsprotokoll.
+
+Keine Informationen erfinden.
+Namen, Termine, Zahlen und Zuständigkeiten erhalten.
+Nur den fertigen Protokolltext ausgeben.
+
+Thema:
+${topic.title||"Keine Angabe"}
+
+Attribut:
+${entry.type}
+
+Zuständig:
+${responsibleText(entry)}
+
+Status:
+${entry.status}
+
+Termin:
+${entry.dueDate||"Keine Angabe"}
+
+Text:
+${entry.text||entry.transcript}
+`.trim();
+}
+
+function acceptManualAI(
+    topicId,
+    entryId
+){
+
+    const entry =
+        findEntry(topicId,entryId);
+
+    const value =
+        document.getElementById(
+            "manualResult-"+entryId
+        ).value.trim();
+
+    if(!value)return;
+
+    entry.previousText=
+        entry.text;
+
+    entry.text=value;
+
+    renderTopics();
+    renderProtocolTable();
+}
+
+async function copyTextarea(id){
+
+    const element =
+        document.getElementById(id);
+
+    try{
+
+        await navigator.clipboard
+            .writeText(
+                element.value
+            );
+
+        alert("Prompt kopiert.");
+
+    }catch(error){
+
+        element.select();
+        document.execCommand("copy");
+    }
+}
+
+/* =========================================================
+   GESAMTPROTOKOLL
+========================================================= */
+
+function renderProtocolTable(){
+
+    const summary =
+        document.getElementById(
+            "protocolSummary"
+        );
+
+    const container =
+        document.getElementById(
+            "protocolTableContainer"
+        );
+
+    if(!summary || !container){
+        return;
+    }
+
+    const title =
+        document.getElementById(
+            "protocolTitle"
+        ).value.trim();
+
+    const date =
+        document.getElementById(
+            "protocolDate"
+        ).value;
+
+    const location =
+        document.getElementById(
+            "protocolLocation"
+        ).value.trim();
+
+    summary.innerHTML=`
+
+<div>
+<strong>Besprechung:</strong>
+${escapeHTML(title||"—")}
+</div>
+
+<div>
+<strong>Datum:</strong>
+${escapeHTML(formatDate(date))}
+</div>
+
+<div>
+<strong>Ort:</strong>
+${escapeHTML(location||"—")}
+</div>
+`;
+
+    let html=`
+
+<table class="protocol-table">
+
+<thead>
+<tr>
+<th class="number-column">Nr.</th>
+<th>Thema / Inhalt</th>
+<th class="type-column">Attribut</th>
+<th class="member-column">Zuständig</th>
+<th class="status-column">Status</th>
+<th class="date-column">Termin</th>
+</tr>
+</thead>
+
+<tbody>
+`;
+
+    topics.forEach(
+        (topic,ti)=>{
+
+        html+=`
+
+<tr class="topic-row">
+<td>${ti+1}</td>
+<td colspan="5">
+${escapeHTML(
+topic.title||
+"Ohne Themenüberschrift"
+)}
+</td>
+</tr>
+`;
+
+        topic.entries.forEach(
+            (entry,ei)=>{
+
+            html+=`
+
+<tr>
+
+<td class="number-column">
+${ti+1}.${ei+1}
+</td>
+
+<td>
+${formatMultiline(
+entry.text||
+entry.transcript||
+""
+)}
+</td>
+
+<td>
+${escapeHTML(entry.type)}
+</td>
+
+<td>
+${escapeHTML(
+responsibleText(entry)
+)}
+</td>
+
+<td>
+${escapeHTML(entry.status)}
+</td>
+
+<td>
+${escapeHTML(
+formatDate(entry.dueDate)
+)}
+</td>
+
+</tr>
+`;
+        });
+    });
+
+    html+=`
+</tbody>
+</table>
+`;
+
+    container.innerHTML=html;
+}
+
+/* =========================================================
+   SPEICHERN
+========================================================= */
+
+function collectProtocolData(){
+
+    return {
+        version:"3.3",
+
+        title:
+            document.getElementById(
+                "protocolTitle"
+            ).value,
+
+        date:
+            document.getElementById(
+                "protocolDate"
+            ).value,
+
+        location:
+            document.getElementById(
+                "protocolLocation"
+            ).value,
+
+        teamMembers:[
+            ...teamMembers
+        ],
+
+        topics:
+            topics.map(topic=>({
+
+                id:topic.id,
+                title:topic.title,
+
+                entries:
+                    topic.entries.map(
+                        entry=>({
+
+                            id:entry.id,
+                            uid:entry.uid,
+
+                            members:[
+                                ...(entry.members||[])
+                            ],
+
+                            additionalMembers:
+                                entry.additionalMembers||"",
+
+                            type:entry.type,
+                            status:entry.status,
+                            dueDate:entry.dueDate,
+
+                            text:entry.text,
+                            transcript:entry.transcript,
+                            previousText:entry.previousText
+                        })
+                    )
+            }))
+    };
+}
+
+function saveProtocolLocal(){
+
+    localStorage.setItem(
+        STORAGE_PROTOCOL,
+        JSON.stringify(
+            collectProtocolData()
+        )
+    );
+
+    alert(
+        "Protokoll wurde lokal gespeichert."
+    );
+}
+
+async function loadProtocolLocal(){
+
+    let raw =
+        localStorage.getItem(
+            STORAGE_PROTOCOL
+        );
+
+    if(!raw){
+        raw=
+            localStorage.getItem(
+                "protocol_tool_v32"
+            );
+    }
+
+    if(!raw){
+        raw=
+            localStorage.getItem(
+                "protocol_tool_v31"
+            );
+    }
+
+    if(!raw){
+
+        alert(
+            "Kein gespeichertes Protokoll vorhanden."
+        );
+
+        return;
+    }
+
+    try{
+
+        loadProtocolData(
+            JSON.parse(raw)
+        );
+
+        await loadAllAttachments();
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "Protokoll konnte nicht geladen werden."
+        );
+    }
+}
+
+/* =========================================================
+   JSON
+========================================================= */
+
+function exportJSON(){
+
+    const blob =
+        new Blob(
+            [
+                JSON.stringify(
+                    collectProtocolData(),
+                    null,
+                    2
+                )
+            ],
+            {
+                type:
+                    "application/json"
+            }
+        );
+
+    downloadBlob(
+        blob,
+        createFilename("json")
+    );
+}
+
+function importJSON(event){
+
+    const file =
+        event.target.files[0];
+
+    if(!file)return;
+
+    const reader =
+        new FileReader();
+
+    reader.onload=
+        async function(){
+
+            try{
+
+                loadProtocolData(
+                    JSON.parse(
+                        reader.result
+                    )
+                );
+
+                await loadAllAttachments();
+
+            }catch(error){
+
+                alert(
+                    "JSON-Datei konnte nicht geladen werden."
+                );
+            }
+        };
+
+    reader.readAsText(file);
+
+    event.target.value="";
+}
+
+/* =========================================================
+   DATEN LADEN
+========================================================= */
+
+function loadProtocolData(data){
+
+    document.getElementById(
+        "protocolTitle"
+    ).value=data.title||"";
+
+    document.getElementById(
+        "protocolDate"
+    ).value=data.date||"";
+
+    document.getElementById(
+        "protocolLocation"
+    ).value=data.location||"";
+
+    teamMembers=
+        Array.isArray(data.teamMembers)
+        ?data.teamMembers
+        :Array.isArray(data.team)
+            ?data.team
+            :[];
+
+    topics=
+        Array.isArray(data.topics)
+        ?data.topics
+        :[];
+
+    let maxTopic=0;
+    let maxEntry=0;
+
+    topics.forEach(topic=>{
+
+        maxTopic=
+            Math.max(
+                maxTopic,
+                topic.id||0
+            );
+
+        if(!Array.isArray(topic.entries)){
+            topic.entries=[];
+        }
+
+        topic.entries.forEach(entry=>{
+
+            maxEntry=
+                Math.max(
+                    maxEntry,
+                    entry.id||0
+                );
+
+            if(!entry.uid){
+                entry.uid=createUUID();
+            }
+
+            if(!Array.isArray(entry.members)){
+
+                entry.members=[];
+
+                if(entry.member){
+                    entry.members.push(
+                        entry.member
+                    );
+                }
+            }
+
+            entry.additionalMembers=
+                entry.additionalMembers||"";
+
+            entry.type=
+                entry.type||"Info";
+
+            entry.status=
+                entry.status||"Offen";
+
+            entry.dueDate=
+                entry.dueDate||
+                entry.due||
+                "";
+
+            entry.text=
+                entry.text||"";
+
+            entry.transcript=
+                entry.transcript||"";
+
+            entry.previousText=
+                entry.previousText||
+                entry.previous||
+                "";
+
+            entry.audioBlob=null;
+            entry.audioURL=null;
+            entry.audioType="";
+
+            entry.audioStored=false;
+            entry.drawingStored=false;
+        });
+    });
+
+    nextTopicId=maxTopic+1;
+    nextEntryId=maxEntry+1;
+
+    renderTeam();
+    renderTopics();
+    renderProtocolTable();
+}
+
+/* =========================================================
+   CSV
+========================================================= */
+
+function exportCSV(){
+
+    const rows=[[
+        "Nummer",
+        "Thema",
+        "Protokolltext",
+        "Attribut",
+        "Zuständig",
+        "Status",
+        "Termin"
+    ]];
+
+    topics.forEach(
+        (topic,ti)=>{
+
+        topic.entries.forEach(
+            (entry,ei)=>{
+
+            rows.push([
+                `${ti+1}.${ei+1}`,
+                topic.title,
+                entry.text||
+                    entry.transcript,
+                entry.type,
+                responsibleText(entry),
+                entry.status,
+                entry.dueDate
+            ]);
+        });
+    });
+
+    const csv =
+        rows.map(
+            row=>
+                row.map(
+                    value=>
+                        '"'+
+                        String(value??"")
+                            .replace(
+                                /"/g,
+                                '""'
+                            )+
+                        '"'
+                ).join(";")
+        ).join("\n");
+
+    downloadBlob(
+        new Blob(
+            ["\uFEFF"+csv],
+            {
+                type:
+                    "text/csv;charset=utf-8"
+            }
+        ),
+
+        createFilename("csv")
+    );
+}
+
+/* =========================================================
+   PDF
+========================================================= */
+
+function printProtocol(){
+    renderProtocolTable();
+    window.print();
+}
+
+/* =========================================================
+   HELFER
+========================================================= */
+
+async function parseApiError(response){
+
+    let message=
+        response.status+
+        " "+
+        response.statusText;
+
+    try{
+
+        const data =
+            await response.json();
+
+        if(
+            data.error &&
+            data.error.message
+        ){
+            message=
+                data.error.message;
+        }
+
+    }catch(error){}
+
+    return new Error(message);
+}
+
+function createFilename(extension){
+
+    let title =
+        document.getElementById(
+            "protocolTitle"
+        ).value.trim()||
+        "Protokoll";
+
+    title=
+        title.replace(
+            /[^a-zA-Z0-9äöüÄÖÜß_-]+/g,
+            "_"
+        );
+
+    const date =
+        document.getElementById(
+            "protocolDate"
+        ).value;
+
+    if(date){
+        title+="_"+date;
+    }
+
+    return title+"."+extension;
+}
+
+function downloadBlob(
+    blob,
+    filename
+){
+
+    const url =
+        URL.createObjectURL(blob);
+
+    const link =
+        document.createElement("a");
+
+    link.href=url;
+    link.download=filename;
+
+    document.body.appendChild(
+        link
+    );
+
+    link.click();
+    link.remove();
+
+    setTimeout(
+        ()=>URL.revokeObjectURL(url),
+        1000
+    );
+}
+
+function formatDate(value){
+
+    if(!value)return "—";
+
+    const p=value.split("-");
+
+    if(p.length!==3){
+        return value;
+    }
+
+    return `${p[2]}.${p[1]}.${p[0]}`;
+}
+
+function escapeHTML(value){
+
+    return String(value??"")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+function escapeAttribute(value){
+    return escapeHTML(value);
+}
+
+function formatMultiline(value){
+
+    return escapeHTML(
+        value||""
+    ).replace(
+        /\n/g,
+        "<br>"
+    );
+}
+
+/* =========================================================
+   LIVE AKTUALISIERUNG
+========================================================= */
+
+document.getElementById(
+    "protocolTitle"
+).addEventListener(
+    "input",
+    renderProtocolTable
+);
+
+document.getElementById(
+    "protocolDate"
+).addEventListener(
+    "change",
+    renderProtocolTable
+);
+
+document.getElementById(
+    "protocolLocation"
+).addEventListener(
+    "input",
+    renderProtocolTable
+);
+
+document.addEventListener(
+    "keydown",
+    event=>{
+
+        if(event.key==="Escape"){
+
+            if(
+                !document.getElementById(
+                    "drawingModal"
+                ).classList.contains(
+                    "hidden"
+                )
+            ){
+                closeDrawingModal();
+            }else{
+                closeHelp();
+            }
+        }
+    }
+);
+
+</script>
+
+</body>
+</html>
